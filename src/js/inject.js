@@ -22,9 +22,7 @@ import '../css/inject.css';
     const WATCH_PAGE_SLUG = '/watch';
     const body = window.document.body;
     const isWatchPage = _ => window.location.pathname.indexOf(WATCH_PAGE_SLUG) !== -1;
-    const setupQueTemplate = queList => {
-        const root = createElem('yq__container', {id: 'yq__root--container'});
-        const containerBody = createElem('yq__container--body');
+    const generateList = queList => {
         const list = createElem('yq__list', {});
 
         queList.forEach((item, index) => {
@@ -51,7 +49,6 @@ import '../css/inject.css';
             const thumbHolder = createElem('yq__itemThumb--holder');
             const thumbWrapper = createElem('yq__itemThumb--wrapper');
             const thumbnail = createElem('yq__itemThumb--img', {
-                //todo change this
                 width: 72,
                 src: `https://i.ytimg.com/vi/${item.id}/default.jpg`
             }, 'img');
@@ -68,34 +65,31 @@ import '../css/inject.css';
 
             //const author and stats in footer
             const listItemFooter = createElem('yq__item--row yq__item--footer');
-            const itemAuthor = createElem('yq__itemAuthor');
+
+            const itemViews = createElem('yq__itemViews yq__footer--infoBlock');
+            itemViews.innerHTML = `${item.views} views`;
+            listItemFooter.appendChild(itemViews);
+
+            const itemAuthor = createElem('yq__itemAuthor yq__footer--infoBlock');
             itemAuthor.innerHTML = item.author;
             listItemFooter.appendChild(itemAuthor);
+
+
             listItem.appendChild(listItemFooter);
 
             //append list item to list
             list.appendChild(listItem);
         });
 
-        containerBody.appendChild(list);
-        root.appendChild(containerBody);
-        //
-        //
-        //
-        // <div class="yq__container" id="yq__root--container">
-        //
-        //         <div class="yq__container--body">
-        //         <ul class="yq__list">
-        //         <li class="yq__list--item">
-        //         <a class="yq__item--link">Official: Best Travelling songs</a>
-        //     </li>
-        //     </ul>
-        //     </div>
-        //
-        //
-        //     </div>
-
+        return list;
+    };
+    const setupQueTemplate = queList => {
+        const root = createElem('yq__container', {id: 'yq__root--container'});
+        const containerBody = createElem('yq__container--body');
+        const list = generateList(queList);
         body.appendChild(root);
+        root.appendChild(containerBody);
+        containerBody.appendChild(list);
     };
 
 

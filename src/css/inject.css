@@ -101,6 +101,21 @@
     font-size: 12px;
 }
 
+.yq__footer--infoBlock {
+    display: inline-block;
+}
+
+.yq__footer--infoBlock:after {
+    content: "*";
+    color: #aeaeae;
+    margin: 0 10px;
+    display: inline-block;
+}
+
+.yq__footer--infoBlock:last-child:after {
+    content: '';
+    margin: 0;
+}
 .yq__itemDrag--wrapper {
     width: 20px;
     float: right;
