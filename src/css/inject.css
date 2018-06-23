@@ -1,0 +1,124 @@
+#yq__root--container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    color: #cacaca;
+    background: #222222;
+    font-size: 14px;
+    width: 500px;
+    z-index: 9999;
+}
+
+.yq__container .yq__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    height: 382px;
+    width: 100%;
+}
+
+.yq__container--body {
+    padding: 20px 0;
+}
+
+.yq__list--item {
+    cursor: pointer;
+    font-size: 13px;
+    margin: 0;
+    padding: 10px 0 10px;
+    display: block;
+    -webkit-user-select: none;
+    overflow: hidden;
+}
+
+.yq__item--row {
+    display: block;
+}
+
+.yq__list--item:hover {
+    background: #525252;
+}
+
+.yq__list--item.yq__list--activeItem {
+    background: #3a3a3a;
+}
+
+.yq__list--itemIndex {
+    float: left;
+    width: 24px;
+    padding: 2px;
+    margin: 0 2px;
+    font-size: 10px;
+    line-height: 41px;
+    text-align: center;
+}
+
+.yq__itemThumb--container {
+    float: left;
+    margin-right: 10px;
+    position: relative;
+    overflow: hidden;
+    background: #f1f1f1;
+    font-size: 0;
+    vertical-align: middle;
+    display: inline-block;
+    width: 72px;
+    height: auto;
+}
+
+.yq__itemThumb--wrapper {
+    padding-bottom: 56.25%;
+}
+
+.yq__itemThumb--holder {
+    position: absolute;
+    _position: static;
+    bottom: -100px;
+    top: -100px;
+    left: -100px;
+    right: -100px;
+    text-align: center;
+    white-space: nowrap;
+    word-break: normal;
+}
+
+.yq__itemThumb--holder::after {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.yq__itemThumb--img {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.yq__item--footer {
+    color: #767676;
+    margin: 3px 0;
+    font-size: 12px;
+}
+
+.yq__itemDrag--wrapper {
+    width: 20px;
+    float: right;
+    margin: -10px 0 -10px 0;
+    display: block;
+    vertical-align: middle;
+    padding: 15px;
+    cursor: -webkit-grab;
+    position: relative;
+    height: 40px;
+}
+
+.yq__list--item:hover .yq__itemDrag--wrapper {
+    background-color: #353535;
+}
+
+.yq__itemDrag--handler {
+    background: url(../img/drag-handler.png) center center no-repeat;
+    width: 20px;
+    height: 31px;
+}
