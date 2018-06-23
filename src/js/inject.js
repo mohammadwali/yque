@@ -53,7 +53,7 @@ import '../css/inject.css';
             const thumbnail = createElem('yq__itemThumb--img', {
                 //todo change this
                 width: 72,
-                src: 'https://i.ytimg.com/vi/T5eQ-Vo_3EQ/default.jpg'
+                src: `https://i.ytimg.com/vi/${item.id}/default.jpg`
             }, 'img');
             thumbHolder.appendChild(thumbnail);
             thumbWrapper.appendChild(thumbHolder);
@@ -115,87 +115,24 @@ import '../css/inject.css';
     body.classList.add('yq-injected');
 
 
-   // if (isWatchPage()) {
+    // if (isWatchPage()) {
 
-        const itemsList = [
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'Mix - OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'T-SERIES',
-                title: 'OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-            },
-            {
-                views: 6468853,
-                author: 'Padukone',
-                title: 'Ilahi Yeh Jawaani Hai Deewani Full Video Song | Ranbir Kapoor, Deepika Padukone'
-            }
-        ];
+    const itemsList = [
+        {
+            views: 6468853,
+            id: 'T5eQ-Vo_3EQ',
+            author: 'T-SERIES',
+            title: 'Mix - OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
+        },
+        {
+            id: 'RCgbE6eS-DU',
+            views: 1400821,
+            title: 'Kar Har Maidaan Fateh Lyrical | Sanju',
+            author: 'Sukhwinder Singh',
+        }
+    ];
 
 
-        setupQueTemplate(itemsList);
-   // }
+    setupQueTemplate(itemsList);
+    // }
 });
