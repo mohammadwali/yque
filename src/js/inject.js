@@ -25,13 +25,14 @@ require('jquery-ui-bundle');
     const WATCH_PAGE_SLUG = '/watch';
     const body = window.document.body;
     const isWatchPage = _ => window.location.pathname.indexOf(WATCH_PAGE_SLUG) !== -1;
+
     const generateList = queList => {
         const list = createElem('yq__list', {});
 
         queList.forEach((item, index) => {
             const listItem = createElem('yq__list--item', {
                 'data-index': index,
-                'data-video-id': index //todo change this when data will arrive
+                'data-video-id': item.id
             });
 
             //item number
@@ -137,7 +138,13 @@ require('jquery-ui-bundle');
             views: 1400821,
             title: 'Kar Har Maidaan Fateh Lyrical | Sanju',
             author: 'Sukhwinder Singh',
-        }
+        },
+        {
+            views: 6468853,
+            id: 'abiL84EAWSY',
+            author: 'YRF',
+            title: 'Sultan - Full Title Song | Salman Khan | Anushka Sharma'
+        },
     ];
 
 
