@@ -1,8 +1,11 @@
 import '../css/inject.css';
 
+const $ = require('jquery');
+require('jquery-ui-bundle');
+
 (function (window, undefined, factory) {
 
-    // create a port to send and recive
+    // create a port to send and receive
     // message with background app
     const port = chrome.runtime.connect();
 
@@ -83,13 +86,24 @@ import '../css/inject.css';
 
         return list;
     };
+
     const setupQueTemplate = queList => {
-        const root = createElem('yq__container', {id: 'yq__root--container'});
+        const sortableOptions = {
+            handle: '.yq__itemDrag--wrapper',
+            placeholder: 'yq__item--placeholder'
+        };
+        const root = createElem('yq__container', {
+            id: 'yq__root--container'
+        });
         const containerBody = createElem('yq__container--body');
         const list = generateList(queList);
         body.appendChild(root);
         root.appendChild(containerBody);
         containerBody.appendChild(list);
+
+        if (!$(list).hasClass('ui-sortable')) {
+            $(list).sortable(sortableOptions);
+        }
     };
 
 
