@@ -4,21 +4,65 @@ const $ = require('jquery');
 require('jquery-ui-bundle');
 
 (function (window, undefined, factory) {
+    // this content-script plays role of medium to publish/subscribe messages
+    // from webpage to the background script
+    const SEND_WITH_EVENT = '__FROM_YQUE';
+    const LISTEN_TO_EVENT = '__TO_YQUE';
 
-    // create a port to send and receive
-    // message with background app
-    const port = chrome.runtime.connect();
+    // this port connects with background script
+    let port = chrome.runtime.connect();
+    port.onDisconnect.addListener(handleDisconnect);
+    port.onMessage.addListener(handleRequestOrResponse); // for replies
 
-    // // send an initial message to background
-    // // that content script is injected
-    // port.postMessage({
-    //   injected: true
-    // });
+    // if background script sent a message
+    chrome.runtime.onMessage.addListener(onRuntimeConnect);
 
-    // //listener to recive messages from background
-    // port.onMessage.addListener(function(response) {
-    //   if (response.init) factory(window, undefined, port)
-    // });
+    // this event handler watches for messages sent from the webpage
+    // it receives those messages and forwards to background script
+    window.addEventListener('message', onWindowMessage);
+
+    function onRuntimeConnect(request, sender, sendResponse) {
+        if (request.ping) {
+            return sendResponse({pong: true});
+        }
+
+        if (!sender.tab) {
+            handleRequestOrResponse(request, false)
+        }
+    }
+
+    function handleDisconnect() {
+        port = null;
+        window.removeEventListener('message', onWindowMessage);
+    }
+
+    function handleRequestOrResponse(req, isReply) {
+        // get message from background script and forward to the webpage
+        req.type = SEND_WITH_EVENT;
+        req.reply = (typeof isReply !== 'boolean') ? true : isReply;
+
+        window.postMessage(req, '*');
+    }
+
+    function onWindowMessage(event) {
+        // if invalid source or if dead port
+        if (event.data.type !== LISTEN_TO_EVENT || !port) {
+            return;
+        }
+
+        // if browser is asking whether extension is available
+        if (event.data.todo === 'ping') {
+            window.postMessage({
+                connected: true,
+                type: SEND_WITH_EVENT,
+                todo: event.data.todo,
+                id: event.data.id
+            }, '*');
+        }
+
+        // forward message to background script
+        port.postMessage(event.data);
+    }
 
     factory(window, undefined, port);
 })(window, undefined, function (window, undefined, port) {
@@ -112,7 +156,7 @@ require('jquery-ui-bundle');
     };
 
     const appendAddToQueButtons = _ => {
-        const icon =  createElem('yq__addToQue--icon yq__addToQue--previewIcon');
+        const icon = createElem('yq__addToQue--icon yq__addToQue--previewIcon');
         icon.innerHTML = '+ Add';
 
         $('ytd-compact-video-renderer ytd-thumbnail')
