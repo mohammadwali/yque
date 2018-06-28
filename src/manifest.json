@@ -1,5 +1,6 @@
 {
-  "name": "Chrome Extension Webpack",
+  "name": "Yque",
+  "description": "Create temporary playlist/ques on youtube",
   "options_page": "options.html",
   "background": {
     "page": "background.html"

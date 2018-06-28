@@ -23,7 +23,11 @@ require('jquery-ui-bundle');
     factory(window, undefined, port);
 })(window, undefined, function (window, undefined, port) {
     const WATCH_PAGE_SLUG = '/watch';
+    const ADD_TO_QUE_WATCH_DELAY = 1000;
+
+    let addButtonInterval = null;
     const body = window.document.body;
+
     const isWatchPage = _ => window.location.pathname.indexOf(WATCH_PAGE_SLUG) !== -1;
 
     const generateList = queList => {
@@ -107,6 +111,17 @@ require('jquery-ui-bundle');
         }
     };
 
+    const appendAddToQueButtons = _ => {
+        const icon =  createElem('yq__addToQue--icon yq__addToQue--previewIcon');
+        icon.innerHTML = '+ Add';
+
+        $('ytd-compact-video-renderer ytd-thumbnail')
+            .each(function () {
+                const thumb = $(this);
+                const hasIcon = thumb.find('.yq__addToQue--icon').length;
+                if (!hasIcon) thumb.append(icon);
+            });
+    };
 
     const createElem = (classNames = '', attributes = {}, elm = 'div') => {
         const element = document.createElement(elm);
@@ -124,30 +139,34 @@ require('jquery-ui-bundle');
     body.classList.add('yq-injected');
 
 
-    // if (isWatchPage()) {
+    if (isWatchPage()) {
 
-    const itemsList = [
-        {
-            views: 6468853,
-            id: 'T5eQ-Vo_3EQ',
-            author: 'T-SERIES',
-            title: 'Mix - OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-        },
-        {
-            id: 'RCgbE6eS-DU',
-            views: 1400821,
-            title: 'Kar Har Maidaan Fateh Lyrical | Sanju',
-            author: 'Sukhwinder Singh',
-        },
-        {
-            views: 6468853,
-            id: 'abiL84EAWSY',
-            author: 'YRF',
-            title: 'Sultan - Full Title Song | Salman Khan | Anushka Sharma'
-        },
-    ];
+        const itemsList = [
+            {
+                views: 6468853,
+                id: 'T5eQ-Vo_3EQ',
+                author: 'T-SERIES',
+                title: 'Mix - OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
+            },
+            {
+                id: 'RCgbE6eS-DU',
+                views: 1400821,
+                title: 'Kar Har Maidaan Fateh Lyrical | Sanju',
+                author: 'Sukhwinder Singh',
+            },
+            {
+                views: 6468853,
+                id: 'abiL84EAWSY',
+                author: 'YRF',
+                title: 'Sultan - Full Title Song | Salman Khan | Anushka Sharma'
+            },
+        ];
 
 
-    setupQueTemplate(itemsList);
-    // }
+        setupQueTemplate(itemsList);
+    }
+
+
+    addButtonInterval = setInterval(_ => appendAddToQueButtons(), ADD_TO_QUE_WATCH_DELAY);
+
 });
