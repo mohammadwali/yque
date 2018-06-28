@@ -116,6 +116,7 @@
     content: '';
     margin: 0;
 }
+
 .yq__itemDrag--wrapper {
     width: 20px;
     float: right;
@@ -145,4 +146,28 @@
     border-bottom: 2px solid rgb(105, 105, 105);
     box-sizing: border-box;
     border-top: 2px solid rgb(105, 105, 105);
+}
+
+.yq__addToQue--icon {
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 500;
+    background-color: #a71717;
+}
+
+.yq__addToQue--previewIcon {
+    bottom: 4px;
+    opacity: 0;
+    left: 5px;
+    height: 24px;
+    line-height: 24px;
+    position: absolute;
+}
+
+ytd-thumbnail:hover .yq__addToQue--previewIcon{
+    opacity: 1;
+    box-shadow: -3px 4px 25px 1px #000;
 }
