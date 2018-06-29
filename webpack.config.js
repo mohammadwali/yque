@@ -18,10 +18,10 @@ if (fileSystem.existsSync(secretsPath)) {
 
 const options = {
     entry: {
-        popup: path.join(__dirname, 'src', 'js', 'popup.js'),
-        options: path.join(__dirname, 'src', 'js', 'options.js'),
-        inject: path.join(__dirname, 'src', 'js', 'inject.js'),
-        background: path.join(__dirname, 'src', 'js', 'background.js'),
+        popup: path.join(__dirname, 'src/js/popup.js'),
+        options: path.join(__dirname, 'src/js/options.js'),
+        inject: path.join(__dirname, 'src/js/inject/index.js'),
+        background: path.join(__dirname, 'src/js/background.js'),
     },
     chromeExtensionBoilerplate: {
         notHotReload: ['inject']
@@ -38,7 +38,7 @@ const options = {
                 exclude: /node_modules/
             },
             {
-                test: new RegExp('\.(' + ['eot', 'otf', 'svg', 'ttf', 'woff', 'woff2'].join('|') + ')$'),
+                test: new RegExp('\.(' + ['eot', 'otf', 'svg', 'ttf', 'woff', 'woff2', 'jpg', 'jpeg', 'png', 'gif'].join('|') + ')$'),
                 loader: 'file-loader?name=[name].[ext]',
                 exclude: /node_modules/
             },
@@ -84,11 +84,6 @@ const options = {
             template: path.join(__dirname, 'src', 'options.html'),
             filename: 'options.html',
             chunks: ['options']
-        }),
-        new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src', 'background.html'),
-            filename: 'background.html',
-            chunks: ['background']
         }),
         new WriteFilePlugin()
     ]

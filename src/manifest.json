@@ -3,7 +3,10 @@
   "description": "Create temporary playlist/ques on youtube",
   "options_page": "options.html",
   "background": {
-    "page": "background.html"
+    "scripts": [
+      "background.bundle.js"
+    ],
+    "persistent": true
   },
   "browser_action": {
     "default_popup": "popup.html",
@@ -13,7 +16,11 @@
     "128": "icon-128.png"
   },
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://www.googleapis.com; object-src 'self'",
+  "permissions": [
+    "storage",
+    "*://*.googleapis.com/*"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -22,7 +29,8 @@
       ],
       "js": [
         "inject.bundle.js"
-      ]
+      ],
+      "run_at": "document_end"
     }
   ]
 }
