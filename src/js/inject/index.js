@@ -1,5 +1,6 @@
 import '../../css/inject.css';
 import {connection} from './connection';
+import * as store from './storage';
 
 const $ = require('jquery');
 require('jquery-ui-bundle');
@@ -58,7 +59,7 @@ const generateList = queList => {
         const listItemFooter = createElem('yq__item--row yq__item--footer');
 
         const itemViews = createElem('yq__itemViews yq__footer--infoBlock');
-        itemViews.innerHTML = `${item.views} views`;
+        itemViews.innerHTML = `${item.views}`;
         listItemFooter.appendChild(itemViews);
 
         const itemAuthor = createElem('yq__itemAuthor yq__footer--infoBlock');
@@ -124,32 +125,34 @@ body.classList.add('yq-injected');
 
 if (isWatchPage()) {
 
-    const itemsList = [
-        {
-            views: 6468853,
-            id: 'T5eQ-Vo_3EQ',
-            author: 'T-SERIES',
-            title: 'Mix - OFFICIAL: Best Travelling Songs of Bollywood | Road Trip Songs | T-SERIES'
-        },
-        {
-            id: 'RCgbE6eS-DU',
-            views: 1400821,
-            title: 'Kar Har Maidaan Fateh Lyrical | Sanju',
-            author: 'Sukhwinder Singh',
-        },
-        {
-            views: 6468853,
-            id: 'abiL84EAWSY',
-            author: 'YRF',
-            title: 'Sultan - Full Title Song | Salman Khan | Anushka Sharma'
-        },
-    ];
+    store.getData().then(que => setupQueTemplate(que))
 
 
-    setupQueTemplate(itemsList);
+    ;
 }
 
+$(document).on('click', '.yq__addToQue--previewIcon', async function () {
+    const element = $(this).parent().find('ytd-compact-video-renderer');
+    let currentQue = await store.getData();
+    const data = {
+        title: $(element).find('#video-title').html(),
+        id: $(element).find('a').attr('href').replace("/watch?v=", ""),
+        author: $(element).find("#byline").html(),
+        views: $(element).find('#metadata-line > span').html(),
+        time: $(element).find('ytd-thumbnail-overlay-time-status-renderer > span').html()
+    };
 
+
+    if (currentQue.length) {
+        currentQue.push(data);
+        await store.setData(currentQue);
+    } else {
+        currentQue = [data];
+        await store.setData(currentQue);
+    }
+
+    setupQueTemplate(currentQue);
+});
 addButtonInterval = setInterval(_ => appendAddToQueButtons(), ADD_TO_QUE_WATCH_DELAY);
 
 connection.send(connection.todo.PING);
