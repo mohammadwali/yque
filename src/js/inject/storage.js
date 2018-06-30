@@ -8,6 +8,6 @@ export const setData = (data) => {
 
 export const getData = () => {
     return new Promise(resolve => {
-        store.get(['currentQue'], (data) => resolve(data))
+        store.get(['currentQue'], (data) => resolve(data.currentQue))
     });
 };
