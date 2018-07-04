@@ -15,13 +15,10 @@ const body = window.document.body;
 const isWatchPage = _ => window.location.pathname.indexOf(WATCH_PAGE_SLUG) !== -1;
 
 const generateList = queList => {
-    const list = createElem('yq__list', {});
+    const list = createElem('yq__list');
 
     queList.forEach((item, index) => {
-        const listItem = createElem('yq__list--item', {
-            'data-index': index,
-            'data-video-id': item.id
-        });
+        const listItem = createElem('yq__list--item');
 
         //item number
         const itemIndex = createElem('yq__list--itemIndex', {});
@@ -71,6 +68,9 @@ const generateList = queList => {
 
         //append list item to list
         list.appendChild(listItem);
+
+        //add data reference to list item
+        $(listItem).data('item', item);
     });
 
     return list;
@@ -79,7 +79,8 @@ const generateList = queList => {
 const setupQueTemplate = queList => {
     const sortableOptions = {
         handle: '.yq__itemDrag--wrapper',
-        placeholder: 'yq__item--placeholder'
+        placeholder: 'yq__item--placeholder',
+        stop: handleDragStop
     };
     const root = createElem('yq__container', {
         id: 'yq__root--container'
@@ -93,6 +94,18 @@ const setupQueTemplate = queList => {
     if (!$(list).hasClass('ui-sortable')) {
         $(list).sortable(sortableOptions);
     }
+};
+
+const handleDragStop = event => {
+    setTimeout(() => {
+        const listItems = $(event.target).find('.yq__list--item');
+
+        //updating index
+        listItems.each((index, elem) => $(elem).find('.yq__list--itemIndex').text(index + 1));
+
+        //updating index to store
+        store.setQueList(listItems.map((_, elem) => $(elem).data('item')).toArray())
+    }, 0);
 };
 
 const appendAddToQueButtons = _ => {
