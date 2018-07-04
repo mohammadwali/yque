@@ -132,7 +132,7 @@ if (isWatchPage()) {
 }
 
 $(document).on('click', '.yq__addToQue--previewIcon', async function () {
-    const element = $(this).parent().find('ytd-compact-video-renderer');
+    const element = $(this).parents('ytd-compact-video-renderer:first');
     let currentQue = await store.getData();
     const data = {
         title: $(element).find('#video-title').html(),
