@@ -58,9 +58,9 @@ const generateList = queList => {
         //const author and stats in footer
         const listItemFooter = createElem('yq__item--row yq__item--footer');
 
-        const itemViews = createElem('yq__itemViews yq__footer--infoBlock');
-        itemViews.innerHTML = `${item.views}`;
-        listItemFooter.appendChild(itemViews);
+        const itemDuration = createElem('yq__itemViews yq__footer--infoBlock');
+        itemDuration.innerHTML = `${item.duration}`;
+        listItemFooter.appendChild(itemDuration);
 
         const itemAuthor = createElem('yq__itemAuthor yq__footer--infoBlock');
         itemAuthor.innerHTML = item.author;
