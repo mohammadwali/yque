@@ -119,40 +119,36 @@ const createElem = (classNames = '', attributes = {}, elm = 'div') => {
     return element;
 };
 
+const createItemPayload = rootElem => ({
+    author: rootElem.find('#byline').text(),
+    title: rootElem.find('#video-title').text(),
+    views: rootElem.find('#metadata-line > span').text(),
+    id: rootElem.find('a').attr('href').replace('/watch?v=', ''),
+    duration: rootElem.find('ytd-thumbnail-overlay-time-status-renderer > span').text()
+});
 
-body.classList.add('yq-injected');
+const initialize = _ => {
+    body.classList.add('yq-injected');
 
-
-if (isWatchPage()) {
-
-    store.getData().then(que => setupQueTemplate(que))
-
-
-    ;
-}
-
-$(document).on('click', '.yq__addToQue--previewIcon', async function () {
-    const element = $(this).parents('ytd-compact-video-renderer:first');
-    let currentQue = await store.getData();
-    const data = {
-        title: $(element).find('#video-title').html(),
-        id: $(element).find('a').attr('href').replace("/watch?v=", ""),
-        author: $(element).find("#byline").html(),
-        views: $(element).find('#metadata-line > span').html(),
-        time: $(element).find('ytd-thumbnail-overlay-time-status-renderer > span').html()
-    };
-
-
-    if (currentQue.length) {
-        currentQue.push(data);
-        await store.setData(currentQue);
-    } else {
-        currentQue = [data];
-        await store.setData(currentQue);
+//todo watch on html route change
+    if (isWatchPage()) {
+        store.getQueList()
+            .then(que => setupQueTemplate(que));
     }
 
-    setupQueTemplate(currentQue);
-});
-addButtonInterval = setInterval(_ => appendAddToQueButtons(), ADD_TO_QUE_WATCH_DELAY);
+    $(document).on('click', '.yq__addToQue--previewIcon', function () {
+        const root = $(this).parents('ytd-compact-video-renderer:first');
 
-connection.send(connection.todo.PING);
+        store.addItemToQue(createItemPayload(root))
+            .then(que => setupQueTemplate(que));
+    });
+
+
+    addButtonInterval = setInterval(_ => appendAddToQueButtons(), ADD_TO_QUE_WATCH_DELAY);
+
+    connection.send(connection.todo.PING);
+};
+
+
+
+initialize();
