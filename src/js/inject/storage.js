@@ -19,4 +19,13 @@ export const getQueList = () => new Promise(resolve => {
 
 export const addItemToQue = item => getQueList()
     .then(currentQue => (currentQue || []).concat([item]))
-    .then(currentQue => setQueList(currentQue).then(() => currentQue));
+    .then(currentQue => {
+        const currentItem = currentQue.find(i => i.id === item.id);
+
+        if (!currentItem) {
+            return setQueList(currentQue)
+                .then(_ => currentQue);
+        }
+
+        return currentQue;
+    });

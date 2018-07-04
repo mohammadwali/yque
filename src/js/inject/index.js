@@ -119,18 +119,29 @@ const createElem = (classNames = '', attributes = {}, elm = 'div') => {
     return element;
 };
 
+const parseVideoId = str => {
+    let url = str;
+
+    if (str.indexOf('://') === -1) {
+        url = `https://youtube.com${str}`;
+    }
+
+    const parsedUrl = new URL(url);
+    return parsedUrl.searchParams.get('v');
+};
+
 const createItemPayload = rootElem => ({
     author: rootElem.find('#byline').text(),
     title: rootElem.find('#video-title').text(),
     views: rootElem.find('#metadata-line > span').text(),
-    id: rootElem.find('a').attr('href').replace('/watch?v=', ''),
+    id: parseVideoId(rootElem.find('a').attr('href')),
     duration: rootElem.find('ytd-thumbnail-overlay-time-status-renderer > span').text()
 });
 
 const initialize = _ => {
     body.classList.add('yq-injected');
 
-//todo watch on html route change
+    //todo watch on html route change
     if (isWatchPage()) {
         store.getQueList()
             .then(que => setupQueTemplate(que));
@@ -148,7 +159,6 @@ const initialize = _ => {
 
     connection.send(connection.todo.PING);
 };
-
 
 
 initialize();
