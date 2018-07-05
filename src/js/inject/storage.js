@@ -30,3 +30,18 @@ export const addItemToQue = item => getQueList()
 
         return currentQue;
     });
+
+
+export const removeItemFromQue = itemId => getQueList()
+    .then(currentQue => {
+        const currentItemIndex = currentQue.findIndex(i => i.id === itemId);
+
+        if (currentItemIndex !== -1) {
+            currentQue.splice(currentItemIndex, 1);
+
+            return setQueList(currentQue)
+                .then(_ => currentQue);
+        }
+
+        return currentQue;
+    });

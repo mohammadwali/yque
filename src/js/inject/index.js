@@ -121,17 +121,20 @@ const updateActionButton = thumb => {
     thumb.addClass('yq__injected');
 
     if (!hasIcon) {
-        const icon = createElem('yq__addToQue--icon yq__addToQue--previewIcon yq__addToQue--iconAdd');
-        icon.innerHTML = '+ Add';
-        thumb.append(icon);
+        thumb.append(createElem('yq__addToQue--icon yq__addToQue--previewIcon'));
     }
 
+    const icon = thumb.find('.yq__addToQue--icon');
+
     if (isAdded) {
-        thumb.find('.yq__addToQue--icon')
-            .removeClass('yq__addToQue--iconAdd')
+        return icon.removeClass('yq__addToQue--iconAdd')
             .addClass('yq__addToQue--iconRemove')
             .text('- Remove');
     }
+
+    icon.removeClass('yq__addToQue--iconRemove')
+        .addClass('yq__addToQue--iconAdd')
+        .text('+ Add');
 };
 
 const refreshActionButtons = _ => {
@@ -173,10 +176,14 @@ const createItemPayload = rootElem => ({
     duration: rootElem.find('ytd-thumbnail-overlay-time-status-renderer > span').text()
 });
 
-const handleAddToQue = event => {
+const handleActionButtonClick = event => {
     const root = $(event.target).parents('ytd-compact-video-renderer:first');
+    const icon = root.find('.yq__addToQue--icon');
+    const action = icon.hasClass('yq__addToQue--iconAdd') ?
+        store.addItemToQue(createItemPayload(root)) :
+        store.removeItemFromQue(parseVideoId(root.find('a').attr('href')));
 
-    store.addItemToQue(createItemPayload(root))
+    action
         .then(que => setupQueTemplate(que))
         .then(_ => updateActionButton(root.find('ytd-thumbnail')));
 };
@@ -191,7 +198,8 @@ const initialize = async _ => {
 
     body.classList.add('yq-injected');
     addButtonInterval = setInterval(_ => refreshActionButtons(), ADD_TO_QUE_WATCH_DELAY);
-    $(document).on('click', '.yq__addToQue--previewIcon', handleAddToQue);
+
+    $(document).on('click', '.yq__addToQue--previewIcon', handleActionButtonClick);
 };
 
 
