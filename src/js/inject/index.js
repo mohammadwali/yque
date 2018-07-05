@@ -145,6 +145,10 @@ const refreshActionButtons = _ => {
         });
 };
 
+const loadItem = id => {
+    window.location.href = `/watch?v=${id}&feature=yque`;
+};
+
 const createElem = (classNames = '', attributes = {}, elm = 'div') => {
     const element = document.createElement(elm);
     classNames.split(' ')
@@ -188,6 +192,12 @@ const handleActionButtonClick = event => {
         .then(_ => updateActionButton(root.find('ytd-thumbnail')));
 };
 
+const handleQueItemClick = function () {
+    const item = $(this).data('item');
+    loadItem(item.id);
+};
+
+
 const initialize = async _ => {
 
     //todo watch on html route change
@@ -199,6 +209,7 @@ const initialize = async _ => {
     body.classList.add('yq-injected');
     addButtonInterval = setInterval(_ => refreshActionButtons(), ADD_TO_QUE_WATCH_DELAY);
 
+    $(document).on('click', '.yq__list--item', handleQueItemClick);
     $(document).on('click', '.yq__addToQue--previewIcon', handleActionButtonClick);
 };
 
