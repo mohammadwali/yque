@@ -9,6 +9,7 @@ require('jquery-ui-bundle');
 const WATCH_PAGE_SLUG = '/watch';
 const ADD_TO_QUE_WATCH_DELAY = 1000;
 
+let _cachedQueList = [];
 let addButtonInterval = null;
 const body = window.document.body;
 
@@ -87,6 +88,9 @@ const setupQueTemplate = queList => {
     });
     const containerBody = createElem('yq__container--body');
     const list = generateList(queList);
+
+    _cachedQueList = queList;
+
     document.body.appendChild(root);
     root.appendChild(containerBody);
     containerBody.appendChild(list);
@@ -108,15 +112,33 @@ const handleDragStop = event => {
     }, 0);
 };
 
-const appendAddToQueButtons = _ => {
-    const icon = createElem('yq__addToQue--icon yq__addToQue--previewIcon');
-    icon.innerHTML = '+ Add';
+const updateActionButton = thumb => {
+    const foundIcon = thumb.find('.yq__addToQue--icon');
+    const hasIcon = foundIcon.length;
+    const videoId = parseVideoId(thumb.find('a.ytd-thumbnail').attr('href'));
+    const isAdded = _cachedQueList.find(item => item.id === videoId);
 
-    $('ytd-compact-video-renderer ytd-thumbnail')
+    thumb.addClass('yq__injected');
+
+    if (!hasIcon) {
+        const icon = createElem('yq__addToQue--icon yq__addToQue--previewIcon yq__addToQue--iconAdd');
+        icon.innerHTML = '+ Add';
+        thumb.append(icon);
+    }
+
+    if (isAdded) {
+        thumb.find('.yq__addToQue--icon')
+            .removeClass('yq__addToQue--iconAdd')
+            .addClass('yq__addToQue--iconRemove')
+            .text('- Remove');
+    }
+};
+
+const refreshActionButtons = _ => {
+    $('ytd-compact-video-renderer ytd-thumbnail:not(.yq__injected)')
         .each(function () {
             const thumb = $(this);
-            const hasIcon = thumb.find('.yq__addToQue--icon').length;
-            if (!hasIcon) thumb.append(icon);
+            updateActionButton(thumb);
         });
 };
 
@@ -151,26 +173,25 @@ const createItemPayload = rootElem => ({
     duration: rootElem.find('ytd-thumbnail-overlay-time-status-renderer > span').text()
 });
 
-const initialize = _ => {
-    body.classList.add('yq-injected');
+const handleAddToQue = event => {
+    const root = $(event.target).parents('ytd-compact-video-renderer:first');
+
+    store.addItemToQue(createItemPayload(root))
+        .then(que => setupQueTemplate(que))
+        .then(_ => updateActionButton(root.find('ytd-thumbnail')));
+};
+
+const initialize = async _ => {
 
     //todo watch on html route change
-    if (isWatchPage()) {
-        store.getQueList()
-            .then(que => setupQueTemplate(que));
-    }
+    // if (isWatchPage()) {
+    const que = await store.getQueList();
+    setupQueTemplate(que);
+    //}
 
-    $(document).on('click', '.yq__addToQue--previewIcon', function () {
-        const root = $(this).parents('ytd-compact-video-renderer:first');
-
-        store.addItemToQue(createItemPayload(root))
-            .then(que => setupQueTemplate(que));
-    });
-
-
-    addButtonInterval = setInterval(_ => appendAddToQueButtons(), ADD_TO_QUE_WATCH_DELAY);
-
-    connection.send(connection.todo.PING);
+    body.classList.add('yq-injected');
+    addButtonInterval = setInterval(_ => refreshActionButtons(), ADD_TO_QUE_WATCH_DELAY);
+    $(document).on('click', '.yq__addToQue--previewIcon', handleAddToQue);
 };
 
 
