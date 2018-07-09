@@ -8,6 +8,7 @@ require('jquery-ui-bundle');
 
 const WATCH_PAGE_SLUG = '/watch';
 const ADD_TO_QUE_WATCH_DELAY = 1000;
+const VIDEO_PLAYER_ENDED_STATE = 0;
 
 let _cachedQueList = [];
 let addButtonInterval = null;
@@ -19,11 +20,12 @@ const generateList = queList => {
     const list = createElem('yq__list');
 
     queList.forEach((item, index) => {
+        const currentPlayingId = parseVideoId(location.search);
         const listItem = createElem('yq__list--item');
 
         //item number
         const itemIndex = createElem('yq__list--itemIndex', {});
-        itemIndex.innerHTML = (index + 1);
+        itemIndex.innerHTML = currentPlayingId === item.id ? '&#9658;' : (index + 1);
         listItem.appendChild(itemIndex);
 
 
@@ -197,6 +199,35 @@ const handleQueItemClick = function () {
     loadItem(item.id);
 };
 
+const handleWindowPostMessage = event => {
+    const eventData = event.originalEvent.data;
+    if (!eventData || eventData.source !== 'YQUE_INJECTED_TAB') return null;
+
+    //if video is ended
+    if (eventData.state === VIDEO_PLAYER_ENDED_STATE) {
+        //todo store current playing item in store
+        const currentPlayingId = parseVideoId(location.search);
+        const currentPlayingIndex = _cachedQueList.findIndex(item => item.id === currentPlayingId);
+        const nextVideo = _cachedQueList[currentPlayingIndex + 1];
+
+        if (currentPlayingIndex > -1 && nextVideo) {
+            loadItem(nextVideo.id);
+        }
+    }
+};
+
+const listenPlayerEvents = _ => {
+    $('head').append(`<script>
+     const mediaPlayerBindingsInterval = setInterval(_ => {
+            const player = document.getElementById('movie_player');
+    
+            if (player) {
+                 player.addEventListener('onStateChange', state => window.postMessage({state, source: 'YQUE_INJECTED_TAB'}, "*"));
+                clearInterval(mediaPlayerBindingsInterval);
+            }
+        }, 2000);
+ </script>`);
+};
 
 const initialize = async _ => {
 
@@ -204,14 +235,15 @@ const initialize = async _ => {
     // if (isWatchPage()) {
     const que = await store.getQueList();
     setupQueTemplate(que);
+    listenPlayerEvents();
     //}
 
     body.classList.add('yq-injected');
     addButtonInterval = setInterval(_ => refreshActionButtons(), ADD_TO_QUE_WATCH_DELAY);
 
+    $(window).on('message', handleWindowPostMessage);
     $(document).on('click', '.yq__list--item', handleQueItemClick);
     $(document).on('click', '.yq__addToQue--previewIcon', handleActionButtonClick);
 };
-
 
 initialize();
