@@ -5,6 +5,21 @@ import * as store from './storage';
 const $ = require('jquery');
 require('jquery-ui-bundle');
 
+const createElem = (classNames = '', attributes = {}, elm = 'div') => {
+    const element = document.createElement(elm);
+    classNames.split(' ')
+        .forEach(className => element.classList.add(className));
+
+    //append attributes
+    Object.entries(attributes)
+        .forEach(([attr, value]) => element.setAttribute(attr, value));
+
+    return element;
+};
+
+const containerBody = createElem('yq__container--body');
+
+let toogleState = false;
 
 const WATCH_PAGE_SLUG = '/watch';
 const ADD_TO_QUE_WATCH_DELAY = 1000;
@@ -15,6 +30,7 @@ let addButtonInterval = null;
 const body = window.document.body;
 
 const isWatchPage = _ => window.location.pathname.indexOf(WATCH_PAGE_SLUG) !== -1;
+
 
 const generateList = queList => {
     const list = createElem('yq__list');
@@ -75,7 +91,7 @@ const generateList = queList => {
         //add data reference to list item
         $(listItem).data('item', item);
     });
-
+    $('.yq_toggle i').addClass('fa-angle-double-up');
     return list;
 };
 
@@ -88,13 +104,25 @@ const setupQueTemplate = queList => {
     const root = createElem('yq__container', {
         id: 'yq__root--container'
     });
-    const containerBody = createElem('yq__container--body');
+
     const list = generateList(queList);
+    $(root).append(`<header class="yq_header">
+        <div class="yq_upnext" >
+            <p>Tu jana na</p>
+        </div>
+        <div class="yq_action_button">
+            <button>Clear </button>
+            <button>Replay </button>
+        </div>
+    
+        <div class="yq_toggle"><i class="fas fa-angle-double-down"></i></div>
+    </header>`);
 
     _cachedQueList = queList;
 
     document.body.appendChild(root);
     root.appendChild(containerBody);
+
     containerBody.appendChild(list);
 
     if (!$(list).hasClass('ui-sortable')) {
@@ -151,17 +179,6 @@ const loadItem = id => {
     window.location.href = `/watch?v=${id}&feature=yque`;
 };
 
-const createElem = (classNames = '', attributes = {}, elm = 'div') => {
-    const element = document.createElement(elm);
-    classNames.split(' ')
-        .forEach(className => element.classList.add(className));
-
-    //append attributes
-    Object.entries(attributes)
-        .forEach(([attr, value]) => element.setAttribute(attr, value));
-
-    return element;
-};
 
 const parseVideoId = str => {
     let url = str;
@@ -228,7 +245,21 @@ const listenPlayerEvents = _ => {
         }, 2000);
  </script>`);
 };
+const handleContainerToggle = () => {
+    toogleState = !toogleState;
+    const toggleIcon = $('.yq_toggle i');
+    if (toogleState) {
+        $(containerBody).addClass('yq__toggle--down');
+        toggleIcon.addClass('fa-angle-double-up');
+        toggleIcon.removeClass('fa-angle-double-down')
+    } else {
+        $(containerBody).removeClass('yq__toggle--down');
+        toggleIcon.addClass('fa-angle-double-down');
+        toggleIcon.removeClass('fa-angle-double-up')
+    }
 
+
+};
 const initialize = async _ => {
 
     //todo watch on html route change
@@ -244,6 +275,7 @@ const initialize = async _ => {
     $(window).on('message', handleWindowPostMessage);
     $(document).on('click', '.yq__list--item', handleQueItemClick);
     $(document).on('click', '.yq__addToQue--previewIcon', handleActionButtonClick);
+    $(document).on('click', '.yq_toggle', handleContainerToggle);
 };
 
 initialize();
