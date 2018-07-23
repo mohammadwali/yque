@@ -1,3 +1,5 @@
+@import url("https://use.fontawesome.com/releases/v5.1.0/css/all.css");
+
 #yq__root--container {
     position: fixed;
     bottom: 0;
@@ -5,8 +7,9 @@
     color: #cacaca;
     background: #222222;
     font-size: 14px;
-    width: 500px;
+    width: 313px;
     z-index: 9999;
+    transition: ease-in-out;
 }
 
 .yq__container .yq__list {
@@ -20,6 +23,17 @@
 
 .yq__container--body {
     padding: 20px 0;
+    transition: all 200ms ease-in-out;
+    -webkit-transition: all 200ms ease-in-out;
+    -moz-transition: all 200ms ease-in-out;
+    -o-transition: all 200ms ease-in-out;
+    -ms-transition: all 200ms ease-in-out;
+
+    max-height: 310px;
+    overflow-y: scroll;
+    position: relative;
+    left: 0;
+    width: 100%;
 }
 
 .yq__list--item {
@@ -177,4 +191,39 @@
 ytd-thumbnail:hover .yq__addToQue--previewIcon {
     opacity: 1;
     box-shadow: -3px 4px 25px 1px #000;
+}
+
+.yq_header {
+    width: 100%;
+    padding: 10px;
+    height: 50px;
+    box-sizing: border-box;
+    background: #111;
+    box-shadow: 0px 3px 3px black;
+}
+
+.yq_upnext {
+    float: left;
+    width: 45%;
+}
+
+.yq_action_button {
+    float: left;
+}
+
+.yq_toggle {
+    float: right;
+    font-size: 20px;
+}
+
+.yq__toggle--down {
+    max-height: 0;
+    padding: 0;
+
+
+}
+span.yq_icon {
+    text-align: center;
+    margin: 5px;
+    font-size: 20px;
 }

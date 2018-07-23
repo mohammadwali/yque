@@ -1,6 +1,7 @@
 const store = chrome.storage.sync;
 const keymap = {
-    que: 'queList'
+    que: 'queList',
+    status: 'queStatus'
 };
 
 export const setQueList = list => new Promise(resolve => {
@@ -45,3 +46,20 @@ export const removeItemFromQue = itemId => getQueList()
 
         return currentQue;
     });
+
+export const setQueStatus = (status) => new Promise(resolve => {
+    store.set(
+        {[keymap.status]: status},
+        result => resolve(result)
+    );
+});
+
+export const getQueStatus = () => new Promise(resolve => {
+    store.get(
+        [keymap.status],
+        result => {
+            console.log("result", result);
+            return resolve([])
+        }
+    );
+});

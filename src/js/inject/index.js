@@ -1,5 +1,5 @@
 import '../../css/inject.css';
-import {connection} from './connection';
+
 import * as store from './storage';
 
 const $ = require('jquery');
@@ -18,7 +18,7 @@ const createElem = (classNames = '', attributes = {}, elm = 'div') => {
 };
 
 const containerBody = createElem('yq__container--body');
-
+let queStatus = true;
 let toogleState = false;
 
 const WATCH_PAGE_SLUG = '/watch';
@@ -111,11 +111,15 @@ const setupQueTemplate = queList => {
             <p>Tu jana na</p>
         </div>
         <div class="yq_action_button">
-            <button>Clear </button>
-            <button>Replay </button>
+        <span class="yq_icon clearQue">
+           <i class="fas fa-broom"></i>
+        </span>
+        <span class="yq_icon purseQue">
+            <i class="fas ${queStatus ? 'fa-pause-circle' : 'fa-play-circle'}"></i>
+        </span>
         </div>
     
-        <div class="yq_toggle"><i class="fas fa-angle-double-down"></i></div>
+       <div class="yq_toggle"><i class="fas fa-angle-double-down"></i></div>
     </header>`);
 
     _cachedQueList = queList;
@@ -221,7 +225,7 @@ const handleWindowPostMessage = event => {
     if (!eventData || eventData.source !== 'YQUE_INJECTED_TAB') return null;
 
     //if video is ended
-    if (eventData.state === VIDEO_PLAYER_ENDED_STATE) {
+    if (eventData.state === VIDEO_PLAYER_ENDED_STATE && queStatus) {
         //todo store current playing item in store
         const currentPlayingId = parseVideoId(location.search);
         const currentPlayingIndex = _cachedQueList.findIndex(item => item.id === currentPlayingId);
@@ -257,9 +261,27 @@ const handleContainerToggle = () => {
         toggleIcon.addClass('fa-angle-double-down');
         toggleIcon.removeClass('fa-angle-double-up')
     }
-
+};
+const clearQue = () => {
+    $(containerBody).html("");
+};
+const handlePlayAndPuasle = async () => {
+    queStatus = !queStatus;
+    await store.setQueStatus(queStatus);
+    const list = await store.getQueList();
+    setupQueTemplate([]);
+    if (list.length) {
+        setupQueTemplate(list);
+    }
 
 };
+
+const handleClearQue = async () => {
+    await store.setQueList([]);
+    setupQueTemplate([])
+};
+
+
 const initialize = async _ => {
 
     //todo watch on html route change
@@ -269,6 +291,7 @@ const initialize = async _ => {
     listenPlayerEvents();
     //}
 
+    queStatus = await store.getQueStatus();
     body.classList.add('yq-injected');
     addButtonInterval = setInterval(_ => refreshActionButtons(), ADD_TO_QUE_WATCH_DELAY);
 
@@ -276,6 +299,8 @@ const initialize = async _ => {
     $(document).on('click', '.yq__list--item', handleQueItemClick);
     $(document).on('click', '.yq__addToQue--previewIcon', handleActionButtonClick);
     $(document).on('click', '.yq_toggle', handleContainerToggle);
+    $(document).on('click', '.purseQue', handlePlayAndPuasle);
+    $(document).on('click', '.clearQue', handleClearQue);
 };
 
 initialize();
